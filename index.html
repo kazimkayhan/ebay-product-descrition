@@ -739,6 +739,7 @@
             <strong>E-Mail:</strong>
             <a href="mailto:autoteilestark@gmail.com"
               >autoteilestark@gmail.com</a
+            >
             <br>
             <strong>Adresse:</strong>
             Weidenstieg 15, 20259 Hamburg, Germany
@@ -814,16 +815,49 @@
     </footer>
     <script>
       (function() {
+        'use strict';
+        
+        // Initialize tabs
         var tabs = document.querySelectorAll('input[name="tab"]');
         var contents = document.querySelectorAll('.tab__content');
+        
         function showTab(num) {
+          // Hide all contents
           contents.forEach(function(c) {
-            c.style.display = c.getAttribute('data-tab-content') === String(num) ? 'block' : 'none';
+            c.style.display = 'none';
           });
+          // Show selected content
+          var selectedContent = document.querySelector('[data-tab-content="' + num + '"]');
+          if (selectedContent) {
+            selectedContent.style.display = 'block';
+          }
         }
+        
+        // Add event listeners to all tabs
         tabs.forEach(function(t) {
-          t.addEventListener('change', function() { showTab(this.getAttribute('data-tab')); });
+          t.addEventListener('change', function() {
+            showTab(this.getAttribute('data-tab'));
+          });
+          // Add keyboard navigation
+          t.addEventListener('keydown', function(e) {
+            var index = Array.from(tabs).indexOf(this);
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+              e.preventDefault();
+              if (index < tabs.length - 1) {
+                tabs[index + 1].checked = true;
+                tabs[index + 1].dispatchEvent(new Event('change'));
+              }
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+              e.preventDefault();
+              if (index > 0) {
+                tabs[index - 1].checked = true;
+                tabs[index - 1].dispatchEvent(new Event('change'));
+              }
+            }
+          });
         });
+        
+        // Show first tab initially
         showTab(1);
       })();
     </script>
